@@ -7,9 +7,8 @@ import random
 from flask import Flask
 import os
 from dotenv import load_dotenv
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
-service = Service(ChromeDriverManager().install())
+service = Service(executable_path="./chromedriver.exe")
 
 load_dotenv()
 
@@ -19,16 +18,24 @@ passcode = os.getenv('PASSCODE')
 
 app = Flask(__name__)
 
+
 def join(meet, password, name):
-    driver = webdriver.Chrome(service=service)
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--no-sandbox")
+    driver = webdriver.Chrome(service=service, options=chrome_options)
     choice = [0, 1, 2]
     driver.get(f'https://zoom.us/wc/join/{meet}')
-    time.sleep(30)  # to let the webpage open completely
+
+    WebDriverWait(driver, timeout=300).until(lambda d: d.find_element(By.ID, "input-for-pwd"))  # to let the webpage open completely
 
     driver.find_element(By.ID, "input-for-pwd").send_keys(password)
 
     # driver.find_element("//a[@id='btnSubmit']").click()
     driver.find_element(By.ID, "input-for-name").send_keys(name)
+
+    time.sleep(2)
 
     driver.find_element(By.CLASS_NAME, "preview-join-button").click()
 
@@ -50,6 +57,7 @@ def join(meet, password, name):
     driver.find_element(By.CLASS_NAME, "confirm-tip__footer-btn").click()
 
     time.sleep(5400)
+    driver.quit()
 
 
 
@@ -60,14 +68,14 @@ first_names = ['Aarav', 'Aayush', 'Abhinav', 'Aditi', 'Akash', 'Alisha', 'Aman',
 
 
 def handle_get_request():
-    for num in range(2):
+    for num in range(10):
         Process(target=join, args=(meet_code, passcode, first_names[num])).start()
 
 
 @app.route('/', methods=['GET'])
 def index():
     handle_get_request()
-    return "GET request processed."
+    return "Request Successful!"
 
 
 if __name__ == '__main__':
