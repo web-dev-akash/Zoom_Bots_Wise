@@ -1,4 +1,4 @@
 Flask
 selenium
 Gunicorn
-dotenv
+python-dotenv
