@@ -7,6 +7,9 @@ import random
 from flask import Flask
 import os
 from dotenv import load_dotenv
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+service = Service(ChromeDriverManager().install())
 
 load_dotenv()
 
@@ -17,7 +20,7 @@ passcode = os.getenv('PASSCODE')
 app = Flask(__name__)
 
 def join(meet, password, name):
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(service=service)
     choice = [0, 1, 2]
     driver.get(f'https://zoom.us/wc/join/{meet}')
     time.sleep(30)  # to let the webpage open completely
