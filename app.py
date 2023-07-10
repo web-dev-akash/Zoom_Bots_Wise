@@ -5,12 +5,13 @@ from multiprocessing import Process
 from selenium.webdriver.support.wait import WebDriverWait
 import random
 from flask import Flask
-from dotenvy import load_env, read_file
-from os import environ
+import os
+from dotenv import load_dotenv
 
-load_env(read_file('.env'))
-meet_code = environ.get('MEET_ID')
-passcode = environ.get('PASSCODE')
+load_dotenv()
+
+meet_code = os.getenv('MEET_ID')
+passcode = os.getenv('PASSCODE')
 
 
 app = Flask(__name__)
