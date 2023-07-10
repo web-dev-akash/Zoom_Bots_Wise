@@ -7,8 +7,9 @@ import random
 from flask import Flask
 import os
 from dotenv import load_dotenv
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
-service = Service(executable_path="./chromedriver/chromedriver")
+service = Service(ChromeDriverManager().install())
 
 load_dotenv()
 
